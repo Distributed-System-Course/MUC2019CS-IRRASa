@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.java_muc2019csirrasa.dao.MapInsertDao">
+
+    <resultMap type="com.example.java_muc2019csirrasa.bean.House" id="BaseResultMap">
+<!--        <id column="uid" property="uid" />-->
+        <result column="sourcePrompt" property="sourcePrompt" />
+        <result column="houseName" property="houseName" />
+        <result column="houseArea" property="houseArea" />
+        <result column="housePrice" property="housePrice" />
+        <result column="houseType" property="houseType" />
+        <result column="houseLocation" property="houseLocation" />
+    </resultMap>
+    <insert id="insertResult" parameterType="list" useGeneratedKeys="true" keyProperty="uid">
+        insert into baseinformation(uid,houseName,houseArea,housePrice,houseType,houseLocation,sourcePrompt) values
+        <foreach collection="list" item="it" index="index" separator=",">
+            (
+                (
+                     select * from
+                    (select max(uid)+1 from baseinformation)m
+                 ),
+             #{it.houseName},#{it.houseArea},#{it.housePrice},
+             #{it.houseType},#{it.houseLocation},#{it.sourcePrompt}
+             )
+        </foreach>
+    </insert>
+
+
+<!--    <select id="searchResult" parameterType="java.lang.String" resultMap="BaseResultMap">-->
+<!--        select * from baseinformation where 房屋名称=#{suggestId}-->
+<!--                                         or 位置=#{suggestId} or 房型=#{suggestId}-->
+<!--    </select>-->
+</mapper>
