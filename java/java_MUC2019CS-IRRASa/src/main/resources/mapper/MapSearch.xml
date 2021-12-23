@@ -12,8 +12,10 @@
         <result column="houseLocation" property="houseLocation" />
     </resultMap>
 
-
-    <select id="searchResult" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="getHouserSearch" resultMap="BaseResultMap">
+        select * from baseinformation limit 100
+    </select>
+    <select id="searchResult" resultMap="BaseResultMap">
         select * from baseinformation where houseName=#{suggestId}
         or houseLocation=#{suggestId} or houseType=#{suggestId}
         or sourcePrompt=#{suggestId}

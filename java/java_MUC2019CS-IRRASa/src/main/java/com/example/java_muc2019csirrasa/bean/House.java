@@ -6,15 +6,6 @@ import org.springframework.context.annotation.Bean;
 public class House {
 //    String uid;
     String sourcePrompt;
-
-//    public String getUid() {
-//        return uid;
-//    }
-//
-//    public void setUid(String uid) {
-//        this.uid = uid;
-//    }
-
     String houseName;
     String houseArea;
     String housePrice;

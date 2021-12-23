@@ -1,8 +1,8 @@
+
 spring:
   thymeleaf:
     prefix: classpath:/templates/
-    suffix: .html
-    mode: HTML5
+#    mode: HTML5
     encoding: UTF-8
     servlet:
       content-type: text/html
@@ -12,6 +12,8 @@ spring:
     username: root
     password: 340824
     driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: house
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.example.java_muc2019csirrasa.bean
@@ -20,20 +22,11 @@ mybatis:
 logging:
   level:
     com.zoctan.api.mapper : debug
-#  config: classpath:log/*.properties
-      # 设置log4j.properties位置
-#
-#  log4j.rootLogger = DEBUG,Console,File
-#  ###  输出到控制台  ###
-#  log4j.appender.Console=org.apache.log4j.ConsoleAppender
-#  log4j.appender.Console.Target=System.out
-#  log4j.appender.Console.layout=org.apache.log4j.PatternLayout
-#  log4j.appender.Console.layout.ConversionPattern=[%d{yy/MM/dd HH:mm:ss:SSS}]-%l:%m%n
-#  ​
-#  ### 输出到日志文件 ###
-#  log4j.appender.File=org.apache.log4j.RollingFileAppender
-#  log4j.appender.File.File=${project}src\\main\\resources\\app.log
-#  log4j.appender.File.MaxFileSize=10MB
-#  log4j.appender.File.Threshold=ALL
-#  log4j.appender.File.layout=org.apache.log4j.PatternLayout
-#  log4j.appender.File.layout.ConversionPattern=[%p][%d{yyyy-MM-dd HH\:mm\:ss,SSS}][%c]%m%n
+server:
+  port: 8080
+eureka:
+  client:
+#    register-with-eureka: false
+#    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8084/eureka

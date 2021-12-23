@@ -1,67 +1,60 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="https://www.thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑",serif;font-size:14px;} #l-map{height:1100px;width:100%;}</style>
     <script src="js/bootstrap.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="myjs/index.js"></script>
-    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=rgkditHGQqDjme0T6k4KITrB3DPXajNB">
-    </script>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=rgkditHGQqDjme0T6k4KITrB3DPXajNB"></script>
     <script type="text/javascript">
         var res;
-        const tag="<tr><th>房屋名称</th><th>房屋面积</th><th>租价</th><th>房型</th><th><a href=\"javascript:void(0)\" onclick=\"change(this)\">位置</a></th></tr>";
-        function search(){
-            $.ajax({
-                async: false,
-                type: "POST",
-                url: "http://localhost:8080/search",
-                data:{
-                    "suggestId":$("#suggestId").val(),
-                    "f":$("#f").val(),
-                    "g":$("#g").val()
-                },
-                dataType: "json",
-                contentType : "application/x-www-form-urlencoded",
-                success: function(data) {
-                    alert(data.message);
-                    if (data.status===0){
-                        // var res = data.result;
+        window.len = 0;
+        const tag="<tr><td>房屋名称</td><td>房屋面积</td><td>租价</td><td>房型</td><td><a href=\"javascript:void(0)\" onclick=\"change(this)\">位置</a></td></tr>";
+        $(function () {
+            window.search= function () {
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: "/search",
+                    data:{
+                        "suggestId":$("#suggestId").val(),
+                        "f":$("#f").val(),
+                        "g":$("#g").val()
+                    },
+                    dataType: "json",
+                    contentType : "application/x-www-form-urlencoded",
+                    success: function(data) {
+                        alert(data.message);
+                        if(data.len===0){
+                            insert();
+                            console.log("test");
+                            return;
+                        }
                         var table = document.getElementsByTagName('table')[0];
-                        console.log(data.result[0]);
-                        console.log(data.result[0]['houseName']);
                         var length_ = $("#end").val();
                         length_ = parseInt(length_);
-                        console.log(length_)
-                        // if (length_===NAN){
-                        //     length_ = 0;
-                        // }
                         if(length_>data.result.length){
                             length_ = data.result.length;
                         }
                         else if(length_===0){
                             length_ = MAX_LEN;
                         }
-
                         for(let i =0;i<length_;i++){
-
-                            temp = tag;
+                            var temp = tag;
                             temp = temp.replace("房屋名称",data.result[i]['houseName']);
                             temp = temp.replace("房屋面积",data.result[i]['houseArea']);
                             temp = temp.replace("租价",data.result[i]['housePrice']);
                             temp = temp.replace("房型",data.result[i]['houseType']);
                             temp = temp.replace("位置",data.result[i]['houseLocation']);
-                            console.log(temp);
                             table.innerHTML+=temp;
                         }
-                        // $("#table")
-                    }
+                    },
 
-                    // windoxw.location.href="http://localhost:8080";
-                },
                 error: function(data) {
                     alert("error");
                     window.location.href="http://localhost:8080";
@@ -69,16 +62,35 @@
             })
         }
         //有问题
-        function change(target) {
-            //e.preventDefault();
-            $("#show").innerHTML = $(target).text();
-            console.log($(target).text());
-            scrollTo(0,0);
-            searchButton();
+            window.change=function (target) {
+                //e.preventDefault();
+                $("#show").innerHTML = $(target).text();
+                console.log($(target).text());
+                document.getElementById("startPoint").innerText=$(target).text();
+                scrollTo(0,0);
+                searchButton();
+            }
+            window.insert=function (){
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: "http://localhost:8080/insert",
+                    data:{
+                        "suggestId":$("#suggestId").val(),
+                    },
+                    dataType: "json",
+                    contentType : "application/x-www-form-urlencoded",
+                    success: function(data) {
+                        console.log(data);
+                        console.log("OK");
+                    },
+                    error: function(data) {
+                        console.log("error!");
+                    },
+                })
+            }
         }
-        function insert(){
-
-        }
+        )
     </script>
     <title>智能房源搜索系统</title>
 </head>
@@ -91,8 +103,10 @@
     <div id="menu" style="background-color:#FFD700;height:1000px;width:300px;float:left;">
         租房:
         <div>
-            <label for="suggestId"></label><input id="suggestId" type="text" name="suggestId" placeholder="请输入区域、商圈、小区" autocomplete="off">
-            <label for="start"></label><input type="text" id="start" name="f" list="f">
+            起点：<label for="suggestId"></label><input id="suggestId" type="text" name="suggestId" placeholder="请输入区域、商圈、小区" autocomplete="off">
+            <br>
+            终点：<label id="startPoint" name="startPoint">起点</label>
+            <br>排序方式：<label for="start"></label><input type="text" id="start" name="f" list="f">
             <datalist name="f" id="f">
                 <option value="a1">按面积排序</option>
                 <option value="a2">按价格排序</option>
@@ -105,32 +119,96 @@
                 <option value="50">最大显示50条</option>
                 <option value="100">最大显示100条</option>
             </datalist>
-<!--            <div id="show" style="display: none">-->
-<!--                起点：   终点：-->
-<!--            </div>-->
-
-
         </div>
         <button id="btn-search fr" onclick="search()">搜索</button>
         <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:250px;height:auto; display:none;"></div>
         <!-- 面积、租价排序 -->
-        <table id="table">
-            <thead>
-            <tr>
-                <th>房屋名称</th>
-                <th>房屋面积</th>
-                <th>租价</th>
-                <th>房型</th>
-                <th>位置</th>
+        <table id="table" cellspacing="0px">
+            <tr class="tableTitle" align="center" >
+                <td class="col1">房屋名称</td>
+                <td id="onlyId" style="display: none"></td>
+                <td class="col2">房屋面积</td>
+                <td class="col3">租价</td>
+                <td class="col4">房型</td>>
+                <td class="col5">位置</td>
             </tr>
-            </thead>
         </table>
     </div>
     <div id="l-map" style="background-color:#eeeeee;height:1000px;width:1100px;float:left;"></div>
     <div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
         版权 ©</div>
-    <script type="text/javascript" src="js/mapSearch.js" defer></script>
-    <script type="text/javascript" src="js/test.js" defer></script>
+    <script type="text/javascript" >
+
+        // 百度地图API功能
+        function G(id) {
+            return document.getElementById(id);
+        }
+
+        var map = new BMap.Map("l-map");
+        map.centerAndZoom("北京",12);                   // 初始化地图,设置城市和地图级别。
+
+        var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+            {"input" : "suggestId"
+                ,"button" : "btn-search fr"
+                ,"location" : map
+            });
+
+        ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
+            var str = "";
+            var _value = e.fromitem.value;
+            var value = "";
+            if (e.fromitem.index > -1) {
+                value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+            }
+            str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+
+            value = "";
+            if (e.toitem.index > -1) {
+                _value = e.toitem.value;
+                value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+            }
+            str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+            G("searchResultPanel").innerHTML = str;
+        });
+
+        var myValue;
+        ac.addEventListener("onconfirm", function(e) {    //鼠标点击下拉列表后的事件
+            var _value = e.item.value;
+            myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+            G("searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+
+            setPlace();
+        });
+        // function setMyValue(){
+        //     myValue="天安门";
+        // }
+        // 按钮的地图响应
+        function searchButton(){
+            myValue = document.getElementById("suggestId").value;
+
+            setPlace();
+        }
+
+        function setPlace(){
+            map.clearOverlays();    //清除地图上所有覆盖物
+            function myFun(){
+                var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+                map.centerAndZoom(pp, 18);
+                map.addOverlay(new BMap.Marker(pp));    //添加标注
+            }
+            var local = new BMap.LocalSearch(map, { //智能搜索
+                onSearchComplete: myFun
+            });
+            local.search(myValue);
+        }
+    </script>
+    <script type="text/javascript">
+
+        map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        var scaleCtrl = new BMap.ScaleControl();  // 添加比例尺控件
+        map.addControl(scaleCtrl);
+
+    </script>
 </div>
 </body>
 

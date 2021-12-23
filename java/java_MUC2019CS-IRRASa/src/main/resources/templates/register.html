@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title> 注册 </title> 
+  <link rel="stylesheet" href="style/css/base.css"  /> 
+  <link rel="stylesheet" href="style/css/login.css"  />
+  <script  type="text/javascript" src="style/js/jquery-1.7.1.min.js"></script>
+  <!-- 验证码 -->
+  <style>
+  		.verify{
+			width: 95px;
+			position: absolute;
+			right: 0;
+			top: 0;
+			cursor: pointer;
+			height: 46px;
+			font-size: 14px;
+			text-align: center;
+			line-height: 46px; 
+			background-color: rgb(50,165,231);
+			color: black;
+		}
+		::-webkit-scrollbar{
+			display:none;
+		}
+  </style>
+ </head> 
+ <body> 
+  <div id="content" class="content">
+   <div class="banner-box"> 
+    <form id="mainForm" class="main-form" enctype="application/x-www-form-urlencoded" novalidate="novalidate">
+		 <div class="tab-title"> 
+		  <a class="linkAGray" id="toAccountLogin" href="login.html">账号登录</a> 
+		  <span class="register-line"></span> 
+		  <a class="linkABlue" id="toVCodeLogin" href="register.html">账号注册</a> 
+		 </div>
+		 <div id="errorMsg" class="tip-box visiblility-hidden"> 
+		  <i class="err-ico"></i> 
+		  <span class="tip-font" id="tipMsg" >请填写完整的注册信息</span> 
+		  <span id="closeErrorMsg1" class="close-ico"></span>
+		 </div>
+		 <div class="normalInput cycode-box fieldInput" id="cycode-box">
+		  <div class="cycode-selectbox">
+			  <label for="email"></label><input class="ipt-account inp-focus" name="email" id="email" maxlength="50" placeholder="邮箱" autocomplete="off" onfocus="closeErrorMsg()" />
+		  </div> 
+		 </div>
+		<div class="normalInput cycode-box fieldInput" id="username1">
+			<div class="cycode-selectbox">
+				<label for="username"></label><input class="username" name="username" id="username" maxlength="50" placeholder="用户名" autocomplete="off" />
+			</div>
+		</div>
+		<div class="normalInput cycode-box fieldInput" id="password1">
+			<div class="cycode-selectbox">
+				<label for="password"></label><input type="password" class="password" name="password" id="password" maxlength="50" placeholder="密码" autocomplete="off"/>
+			</div>
+		</div>
+		<div class="normalInput cycode-box fieldInput" id="password2">
+			<div class="cycode-selectbox">
+				<label for="password_ensure"></label><input type="password" class="password_ensure" name="password_ensure" id="password_ensure" maxlength="50" placeholder="确认密码" autocomplete="off"  onkeyup="checkpassword()" />
+			</div>
+		</div>
+		<span id="tishi"></span>
+		 <div class="normalInput fieldInput">
+			 <label for="Verificationcode"></label><input type="text" class="inp-focus" name="Verificationcode" id="Verificationcode" maxlength="16" autocomplete="off" placeholder="验证码" onfocus="closeErrorMsg()"/>
+		  <span id="verifyCode"  class="verify"  onclick="sendsms(this);">获取验证码</span>
+		 </div>
+		 <a id="register" class="fullBtnBlue">注册</a>
+    </form>
+   </div>
+  </div>
+
+
+
+
+
+
+
+
+  <script>
+	  function checkpassword() {
+		  var password = document.getElementById("password").value;
+		  var repassword = document.getElementById("password_ensure").value;
+		  if(password === repassword) {
+			  document.getElementById("tishi").innerHTML="<br><font color='green'>两次密码输入一致</font>";
+			  document.getElementById("submit").disabled = false;
+
+		  }else {
+			  document.getElementById("tishi").innerHTML="<br><font color='red'>两次输入密码不一致!</font>";
+			  document.getElementById("submit").disabled = true;
+		  }
+
+	  }
+  	//点击注册事件
+	  Stringcode="";
+  	$("#register").click(function(){  
+    		var email = $("#email").val();
+			var Verificationcode = $("#Verificationcode").val(); //输入的验证码
+
+			if( email==="" || Verificationcode===""){
+				var obj = document.getElementById("errorMsg");
+				$("#tipMsg").html("请填写完整的注册信息！");
+				obj.setAttribute("class", "tip-box visiblility-show");
+				return ;
+			}
+			//邮箱校验
+			var reg =/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+			var t = email.match(reg);
+			if( t == null ){
+				//提示错误信息
+				var obj = document.getElementById("errorMsg");
+				//修改提示文字
+				$("#tipMsg").html("请填写正确的邮箱！");
+				obj.setAttribute("class", "tip-box visiblility-show");
+
+			}
+			if(Stringcode!==$("#test").val()){
+				alert("验证码错误");
+				return;
+			}
+			//发送ajax请求
+			$.ajax({
+			async: false,
+			type: "POST",
+			url: '/register',
+			data: {
+				"username":$("#username").val(),
+				"password":$("#password").val(),
+				"email":$("#email").val()
+			},
+			dataType: "json",
+			contentType : "application/x-www-form-urlencoded",
+			success: function(data){
+				alert(data.message);
+				if (data.status ===1){
+					window.location.href="http://localhost:8080/login";
+				}
+				else{
+					window.location.href="http://localhost:8080/register";
+				}
+			},
+	});
+	  })
+  	//点击错误信息关闭按钮
+  	$("#closeErrorMsg1").click(function(){
+			var obj = document.getElementById("errorMsg");
+			obj.setAttribute("class", "tip-box visiblility-hidden");
+  	});
+  	//关闭错误提示
+  	function closeErrorMsg(){
+  			var obj = document.getElementById("errorMsg");
+			obj.setAttribute("class", "tip-box visiblility-hidden");
+  	}
+    //发送验证码函数
+    function sendsms(e){
+    	var email = $("#email").val();
+    	if( email===""){
+			//提示错误信息
+			var obj = document.getElementById("errorMsg");
+			//修改提示文字
+			$("#tipMsg").html("请填写正确的邮箱！");
+			obj.setAttribute("class", "tip-box visiblility-show");
+			return ;
+    	}
+		//邮箱校验
+		var reg =/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+		var t = email.match(reg);
+		if( t == null ){
+			//提示错误信息
+			var obj = document.getElementById("errorMsg");
+			//修改提示文字
+			$("#tipMsg").html("请填写正确的邮箱！");
+			obj.setAttribute("class", "tip-box visiblility-show");
+			return ;
+		}
+    	//发送ajax请求，后台发送邮件
+		$.ajax({
+			async: false,
+			type: "POST",
+			url: '/email',
+			data: {
+				"email":$("#email").val()
+			},
+			dataType: "json",
+			contentType : "application/x-www-form-urlencoded",
+			success: function(data){
+				Stringcode=data.code;
+			},
+
+		});
+        /*发送验证码功能*/
+        countdown(e);     //若发送验证码成功，则调用倒计时函数
+    }
+    //倒计时函数
+    var time = 5;
+    function countdown(e){
+         if (time === 0) {
+             e.setAttribute("onclick","sendsms(this)");
+             $("#verifyCode").html("获取验证码");
+             //颜色恢复
+             var mychar = document.getElementById("verifyCode");
+             mychar.style.backgroundColor  = "rgb(50,165,231)";
+             time = 5;
+         }
+		 else{
+             //设置背景为灰色
+             var mychar = document.getElementById("verifyCode");
+             mychar.style.backgroundColor  = "rgb(169,169,169)";
+
+             e.removeAttribute("onclick");
+             $("#verifyCode").html("重新发送(" + time + ")");
+             time--;
+             setTimeout(function() {
+                 countdown(e)
+             },1000)
+         }
+	}
+
+
+  </script>
+ </body>
+</html>

@@ -1,4 +1,0 @@
-1
-git add .
-git commit -m "first"
-git push
