@@ -85,7 +85,13 @@
             <artifactId>mail</artifactId>
             <version>1.4</version>
         </dependency>
-<!--        <dependency>-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.3</version>
+        </dependency>
+
+        <!--        <dependency>-->
 <!--            <groupId>org.lionsoul</groupId>-->
 <!--            <artifactId>jcseg-core</artifactId>-->
 <!--            <version>2.1.0</version>-->

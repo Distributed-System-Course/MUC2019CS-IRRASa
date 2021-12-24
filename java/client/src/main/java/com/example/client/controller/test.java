@@ -13,7 +13,7 @@ public class test {
     RestTemplate restTemplate;
     @RequestMapping("/test")
     public String test1(){
-        String object = restTemplate.getForObject("http://localhost:8081/provider/test", String.class);
+        String object = restTemplate.getForObject("http://10.151.25.134:8080/test", String.class);
         return object;
     }
 }

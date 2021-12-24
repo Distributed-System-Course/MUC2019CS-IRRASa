@@ -20,18 +20,55 @@ public class UserController {
     @Autowired
     private DiscoveryClient discoveryClient;  //拉取所有的服务信息
 
-    @GetMapping
+    @GetMapping("/")
     @ResponseBody
-    public String test(){
+    public String test1(){
 
         //可能会有多个同名服务，故使用list
         List<ServiceInstance> instances = discoveryClient.getInstances("house");
         ServiceInstance instance = instances.get(0);
 //        return this.restTemplate.getForObject("http://"+instance.getHost()+":"+ instance.getPort() +"/search",String.class);
 //        直接通过地址和端口调用，没有通过服务区调用
-        return this.restTemplate.getForObject("http://localhost:8080" , String.class);
+        return this.restTemplate.getForObject("http://10.151.25.134:8080" , String.class);
 
     }
+    @GetMapping("/admin")
+    @ResponseBody
+    public String test2(){
+
+        //可能会有多个同名服务，故使用list
+        List<ServiceInstance> instances = discoveryClient.getInstances("house");
+        ServiceInstance instance = instances.get(0);
+//        return this.restTemplate.getForObject("http://"+instance.getHost()+":"+ instance.getPort() +"/search",String.class);
+//        直接通过地址和端口调用，没有通过服务区调用
+        return this.restTemplate.getForObject("http://10.151.25.134:8080/admin" , String.class);
+
+    }
+    @GetMapping("/login")
+    @ResponseBody
+    public String test3(){
+
+        //可能会有多个同名服务，故使用list
+        List<ServiceInstance> instances = discoveryClient.getInstances("house");
+        ServiceInstance instance = instances.get(0);
+//        return this.restTemplate.getForObject("http://"+instance.getHost()+":"+ instance.getPort() +"/search",String.class);
+//        直接通过地址和端口调用，没有通过服务区调用
+        return this.restTemplate.getForObject("http://10.151.25.134:8080/login" , String.class);
+
+    }
+    @GetMapping("/register")
+    @ResponseBody
+    public String test4(){
+
+        //可能会有多个同名服务，故使用list
+        List<ServiceInstance> instances = discoveryClient.getInstances("house");
+        ServiceInstance instance = instances.get(0);
+//        return this.restTemplate.getForObject("http://"+instance.getHost()+":"+ instance.getPort() +"/search",String.class);
+//        直接通过地址和端口调用，没有通过服务区调用
+        return this.restTemplate.getForObject("http://10.151.25.134:8080/register" , String.class);
+
+    }
+
 
 
 }

@@ -5,7 +5,7 @@ function buy(id) {
     $.ajax({
         async: false,
         type: "POST",
-        url: "http://localhost:8080/order/buyPlane",
+        url: "http://10.151.25.134:8080/order/buyPlane",
         data: JSON.stringify(allData),
         dataType: "json",
         contentType: "application/json;charset=utf-8",
@@ -13,18 +13,18 @@ function buy(id) {
             if(data.status===2){
                 var ansswer = confirm(data.message);
                 if(ansswer){
-                    window.location.href = 'http://localhost:8080/order/waitPlane?planeid='+data.planeid;
+                    window.location.href = 'http://10.151.25.134:8080/order/waitPlane?planeid='+data.planeid;
                     alert("请稍等!");
                 }
             }else {
                 alert(data.message);
-                window.location.href = "http://localhost:8080/index.html";
+                window.location.href = "http://10.151.25.134:8080/index.html";
             }
 
         },
         error: function(data) {
             alert("请登录！");
-            window.location.href = "http://localhost:8080/login.html";
+            window.location.href = "http://10.151.25.134:8080/login.html";
         },
     })
 }

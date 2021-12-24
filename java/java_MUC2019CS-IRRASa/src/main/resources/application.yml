@@ -14,6 +14,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: house
+
+#  mvc:
+#    static-path-pattern: /static/**
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.example.java_muc2019csirrasa.bean
@@ -29,4 +32,4 @@ eureka:
 #    register-with-eureka: false
 #    fetch-registry: false
     service-url:
-      defaultZone: http://localhost:8084/eureka
+      defaultZone: http://10.151.25.134:8084/eureka

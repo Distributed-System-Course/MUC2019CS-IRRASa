@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -8,7 +8,7 @@
 $.ajax({
 async: false,
 type: "POST",
-url: "http://localhost:8080/search",
+url: "http://10.151.25.134:8080/search",
 data:{
 "suggestId":$("#suggestId").val(),
 "f":$("#f").val(),

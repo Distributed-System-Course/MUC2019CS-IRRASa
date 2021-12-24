@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>模板文件管理</title>
@@ -441,7 +441,7 @@
         $.ajax({
             async: false,
             type: "POST",
-            url: "http://localhost:8080/house_search",
+            url: "http://10.151.25.134:8080/house_search",
             dataType: "json",
             contentType : "application/x-www-form-urlencoded",
             success: function(data){

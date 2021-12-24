@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+		body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";font-size:14px;}
+		#l-map{height:1100px;width:100%;}
+		#r-result{width:100%;}
+	</style>
+    <script>
+        var List = {{ List|safe }};
+        var name1 = {{name1|safe}};
+        var f = {{f|safe}}
+        var g = {{g|safe}}
+        var point1 = {{point1|safe}}
+        const tag="<tr><th>房屋名称</th><th>房屋面积</th><th>租价</th><th>房型</th><th><a href=\"javascript:void(0)\" onclick=\"change(this)\">位置</a></th></tr>";
+        const MAX_LEN = 14;
+        var p;
+        {% comment %} var meGeo; {% endcomment %}
+        function change(target) {
+
+            var name5 = document.getElementById("suggestId");
+            name5.value = target.text;
+            
+
+            searchByStationName(name5.value);
+            
+           {% comment %} alert(asd); {% endcomment %}
+            {% comment %} p=document.getElementById("result_").value.split (","); ; {% endcomment %}
+            {% comment %} var p1 = new BMap.Point(p[0], p[1]); {% endcomment %}
+            {% comment %} alert(document.getElementById("result_").value ); {% endcomment %}
+            {% comment %} var p2 = new BMap.Point(point1[0],point1[1]); {% endcomment %}
+            {% comment %} var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}}); {% endcomment %}
+            {% comment %} driving.search(p1, p2); {% endcomment %}
+            {% comment %} alert(name5.value) {% endcomment %}
+            {% comment %} navigation(point1); {% endcomment %}
+            scrollTo(0,0);
+            myValue = name5.value;
+            setpoint();
+            document.getElementById("button1").innerHTML="起点："+name1+"-->终点："+target.text;
+            {% comment %} test2(); {% endcomment %}
+        }
+       function test1(){
+            var name = document.getElementById("suggestId");
+            name.value =name1;
+            var name3 = document.getElementById("start");
+            name3.value = f;
+            document.getElementById("button1").innerHTML="起点："+name1;
+            var table=document.getElementsByTagName("table")[0];
+            var len = List.length;
+            var temp;
+            g=parseInt(g);
+            if(g>len){
+                g = len;
+            }
+            else if(g==0){
+                g = MAX_LEN;
+            }
+            var name4 = document.getElementById("end");
+            name4.value = g;
+            for(let i=0;i<g;i++){
+                temp = tag;
+                temp = temp.replace("房屋名称",List[i][0]);
+                temp = temp.replace("房屋面积",List[i][1]);
+                temp = temp.replace("租价",List[i][2]);
+                temp = temp.replace("房型",List[i][3]);
+                temp = temp.replace("位置",List[i][4]);
+                table.innerHTML+=temp;
+            }
+       }
+       function test2(){
+           map.clearOverlays(); 
+           p=document.getElementById("result_").value.split (","); ;
+            var p2 = new BMap.Point(p[0], p[1]);
+            {% comment %} alert(document.getElementById("result_").value ); {% endcomment %}
+            var p1 = new BMap.Point(point1[0],point1[1]);
+            var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
+            driving.search(p1, p2);
+       }
+       {% comment %} function mysearch(target){
+            myValue = document.getElementById("suggestId").value;
+            setpoint();
+            for(let i = 0; i< 4; i++){
+                myValue = target[i][4];
+                setpoint();
+            }
+        } {% endcomment %}
+        
+        function setpoint(){
+            // map.clearOverlays();    //清除地图上所有覆盖物
+            function myFun(){
+                var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+                map.centerAndZoom(pp, 18);
+                map.addOverlay(new BMap.Marker(pp));    //添加标注
+            }
+            var local = new BMap.LocalSearch(map, { //智能搜索
+            onSearchComplete: myFun
+            });
+            local.search(myValue);
+        }
+
+    
+       window.onload=test1;
+    </script>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=rgkditHGQqDjme0T6k4KITrB3DPXajNB"></script>
+    <title>智能房源搜索系统</title>
+</head>
+<body>
+    
+    </form>
+    <div id="container" style="width:1400px">
+        <div id="header" style="background-color:#FFA500;">
+            <h1 style="text-align: center">智能房源搜索系统</h1>
+        </div>
+        <div id="menu" style="background-color:#FFD700;height:800px;width:300px;float:left;">
+     
+            
+				<div>
+
+                <form action="/house" method='get'>
+                 租房:
+	                <input id="suggestId" type="text" name="suggestId" placeholder="请输入区域、商圈、小区"></br>
+                    排序:
+                    <input type="text" id="start" name="f" list="f" placeholder="请输入或选择排序方式">
+                    <datalist  name='f' id='f' >
+                        <option value="a1">按面积排序</option>
+                        <option value="a2">按价格排序</option>
+                    </datalist></br>
+                    数目:
+                    <input type="text" id="end" name="g" list="g"  placeholder="请输入或选择查找数目">
+                    <datalist  name='g' id='g'>
+                        <option value="10">最大显示10条</option>
+                        <option value="20">最大显示20条</option>
+                        <option value="30">最大显示30条</option>
+                        <option value="50">最大显示50条</option>
+                        <option value="100">最大显示100条</option>
+                    </datalist>
+                    <input type="submit"  value="刷新"> 
+                </div>
+                </form>
+                        <input type='text' id ='result_' style="display: none">
+                        <button onclick="test2()" id="button1">button</button>
+
+                   
+
+	            <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:250px;height:auto; display:none;">
+				</div>
+                
+            <div style="height:650px;width:300px;overflow:auto;background:#EEEEEE;">
+    
+            <table>
+                <thead>
+                    <tr>
+                      <th>房屋名称</th>
+                      <th>房屋面积</th>
+                      <th>租价</th>
+                      <th>房型</th>
+                      <th>位置</th>
+                    </tr>
+                </thead>
+            </table>
+            </div>
+        </div>
+        <div id="l-map" style="background-color:#eeeeee;height:800px;width:1100px;float:left;"></div>
+            <div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+            版权 © contact author <a href="javascript:void(0)">werhjk</a>
+        </div>
+    </div>
+   
+    <script type="text/javascript" src="../static/js/mapSearch.js" defer></script>
+    <script type="text/javascript" src="../static/js/mapControl.js" defer></script>
+    <script type="text/javascript" src="../static/js/jquery-3.4.1.min.js" defer></script>
+
+
+</body>
+
+</html>

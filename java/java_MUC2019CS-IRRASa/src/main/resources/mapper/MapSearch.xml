@@ -16,8 +16,8 @@
         select * from baseinformation limit 100
     </select>
     <select id="searchResult" resultMap="BaseResultMap">
-        select * from baseinformation where houseName=#{suggestId}
-        or houseLocation=#{suggestId} or houseType=#{suggestId}
-        or sourcePrompt=#{suggestId}
+        select * from baseinformation where houseName   like CONCAT('%',#{suggestId},'%')
+        or houseLocation  like CONCAT('%',#{suggestId},'%')   or houseType  like CONCAT('%',#{suggestId},'%')
+                                         or sourcePrompt  like CONCAT('%',#{suggestId},'%')
     </select>
 </mapper>

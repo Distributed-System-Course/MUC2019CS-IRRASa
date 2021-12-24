@@ -2,10 +2,10 @@
 eureka:
   client:
     service-url:
-      DEFAULT_ZONE: http://localhost:8084/eureka
+      DEFAULT_ZONE: http://10.151.25.134:8084/eureka
     register-with-eureka: false
     fetch-registry: false
   instance:
-    hostname: localhost
+    hostname: 10.151.25.134
 server:
   port: 8084
